@@ -4,9 +4,17 @@ Parameters:
   BucketName: 
     Type: String
     Description: The Bucket Name
+  PrefixName:
+    Type: String
+    Default: AWS::AccountId
+
+
+Conditions:
+  CreateResource: !Equals [ !Ref 'AWS::Region', 'us-east-1' ]
 
 Resources:
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref BucketName
+      BucketName: !Join [ '-', [ !If [ CreateResource, !Ref PrefixName, !Ref AWS::Region ], !Ref BucketName ] ]
+      # BucketName: !If [ CreateResource, !Ref PrefixName, !Ref AWS::Region ]
